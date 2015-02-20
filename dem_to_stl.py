@@ -16,6 +16,8 @@ parser.add_argument("-q", "--quality", dest="quality", default=2, help="The reso
 parser.add_argument("-t", "--tile", dest="tile", default="none", help="Method to tile the DEM. 'none' will not tile.  Currently only 'square' and 'none' are supported.")
 parser.add_argument("-ta", "--tilesacross", dest="tilesacross", default=1, help="How many horizontal tiles to cut the dem into. 1 will not tile the DEM in this axis.")
 parser.add_argument("-td", "--tilesdown", dest="tilesdown", default=1, help="How many vertical tiles to cut the dem into. 1 will not tile the DEM in this axis.")
+parser.add_argument("-demx","--demx" ,dest="demx", default=0, help="Crop the Dem to this many elements across. 0 (default) will not crop")
+parser.add_argument("-demy","--demy" ,dest="demy", default=0, help="Crop the Dem to this many elements down. 0 (default) will not crop")
 parser.add_argument("sourcefile",  help="Read data from SOURCEFILE", metavar="SOURCEFILE")
 parser.add_argument("destination", help="Save the resultion Bitmap file as DESTINATION", metavar="DESTINATION")
 args = parser.parse_args()
@@ -48,6 +50,6 @@ with open(args.sourcefile, "r") as f:
         heightmap  = demparser.read_data(f)
     resolution = int(args.quality)**2
     heightmap  = heightmap[::resolution]
-    tilelist = demtiler.tile(heightmap,args.tilesdown,args.tilesacross,tiletype = args.tile)
+    tilelist = demtiler.tile(heightmap,args.tilesdown,args.tilesacross,tiletype = args.tile,demx=args.demx,demy=args.demy)
     for tilenum, tile in enumerate(tilelist):
         stl_save(tile,resolution,args.destination,tilenum)

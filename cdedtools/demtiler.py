@@ -3,7 +3,7 @@ demtiler.py
 This module contains functions to split up a dem into tiles.
 """
 
-def tile(heightmap,tilesdown,tilesacross,tiletype = "square"):
+def tile(heightmap,tilesdown,tilesacross,tiletype = "square",demx = 0,demy = 0):
     """
     Tile the preparsed heighmap. Returns an tilesdown by tilesacross list of tiles.
     tile(heightmap, tilesdown=2,tilesacross=3) returns
@@ -15,9 +15,15 @@ def tile(heightmap,tilesdown,tilesacross,tiletype = "square"):
     Note that if the heightmap doesn't divide into the tile size evenly,
     rows and columns of the heightmap will be ommited from the final 
     output to make the tiling fit.
+    
+    You can optionally crop the dem heightmap to a given size 
+    from the upperleft corner with demx and demy.  demx and demy specify
+    the size in elements to crop the heightmap to.
     """
     tilesdown = int(tilesdown)
     tilesacross = int(tilesacross)
+    demx = int(demx)
+    demy = int(demy)
     
     if tiletype == "none":
         tilelist=[heightmap]
@@ -27,6 +33,9 @@ def tile(heightmap,tilesdown,tilesacross,tiletype = "square"):
         import numpy as np
         
         heightarray=np.array(heightmap)
+        # Crop the array if requested
+        if demy>0 and demx>0: 
+            heightarray = heightarray[0:demy,0:demx]
         tilerows = heightarray.shape[0]/tilesdown
         tilecolumns = heightarray.shape[1]/tilesacross 
         tilelist=[]
